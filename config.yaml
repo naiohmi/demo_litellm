@@ -1,0 +1,60 @@
+model_list:
+  - model_name: azure-gpt-4o
+    model_info:
+      id: azure-gpt-4o
+      mode: chat
+    litellm_params:
+      model: azure/gpt-4o
+      api_base: os.environ/AZURE_API_BASE
+      api_key: os.environ/AZURE_OPENAI_API_KEY
+
+  - model_name: azure-text-embedding-ada-002
+    model_info:
+      id: azure-text-embedding-ada-002
+      mode: embedding
+    litellm_params:
+      model: azure/text-embedding-ada-002
+      api_base: os.environ/AZURE_API_BASE
+      api_key: os.environ/AZURE_API_KEY_TEXT_EMBEDDING_ADA_002
+
+  - model_name: ollama
+    model_info:
+      id: ollama-llama3.2
+      mode: chat
+    litellm_params:
+      model: ollama/llama3.2
+      api_base: http://ollama:11434
+
+litellm_settings:
+  cache: true
+  cache_params:
+    type: qdrant-semantic
+    qdrant_semantic_cache_embedding_model: azure-text-embedding-ada-002
+    qdrant_collection_name: semantic_collection
+    qdrant_quantization_config: product
+    similarity_threshold: 0.7
+    mode: default_off
+    ttl: 300
+
+  # Optional logging/callbacks
+  success_callback: ["langfuse"]
+  turn_off_message_logging: true
+  redact_user_api_key_info: true
+  langfuse_default_tags:
+    - cache_hit
+    - semantic-similarity
+    - user_api_key_user_email
+
+  # Network
+  request_timeout: 10
+  force_ipv4: false
+
+  # Fallbacks
+  default_fallbacks: ["azure-gpt-4o"]
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  database_url: os.environ/DATABASE_URL
+  infer_model_from_keys: true
+  background_health_checks: true
+  health_check_interval: 300
