@@ -1,6 +1,6 @@
 # LiteLLM Demo Project
 
-This project demonstrates a simple setup of a LiteLLM proxy server with Docker support.
+This project demonstrates a simple setup of a LiteLLM proxy server with Docker support, semantic caching, and UI integration.
 
 ## Project Structure
 
@@ -54,6 +54,76 @@ The LiteLLM configuration (`docker/config.yaml`) includes:
 - Authentication and API key management
 - Health checks and monitoring
 
+## User Interfaces
+
+### LiteLLM UI
+
+The built-in LiteLLM UI provides monitoring and management capabilities:
+
+- Access at: `http://localhost:4000/ui`
+- Features:
+  - Model performance monitoring
+  - Request/response logging
+  - Cost tracking
+  - User management
+  - API key creation and management
+
+[Documentation Reference](https://docs.litellm.ai/docs/proxy/ui)
+
+### OpenWebUI Integration
+
+OpenWebUI provides a chat interface for interacting with LLM models:
+
+1. Configuration:
+   ```yaml
+   # Add to docker-compose.yml
+   openwebui:
+     image: openwebui/core
+     environment:
+       - ENDPOINTS=http://litellm:4000
+     ports:
+       - "3000:3000"
+   ```
+
+2. Access at: `http://localhost:3000`
+3. Features:
+   - Chat interface for all configured models
+   - Conversation history
+   - Model switching
+   - Prompt templates
+
+[OpenWebUI Documentation](https://docs.openwebui.com/getting-started/quick-start)  
+[Integration Guide](https://docs.litellm.ai/docs/tutorials/openweb_ui#quickstart)
+
+## Semantic Caching with Qdrant
+
+Qdrant provides vector-based semantic caching for improved response times and reduced API costs:
+
+### Configuration
+
+```yaml
+litellm_settings:
+  cache: true
+  cache_params:
+    type: qdrant-semantic
+    qdrant_semantic_cache_embedding_model: azure-text-embedding-ada-002
+    qdrant_collection_name: semantic_collection
+    qdrant_quantization_config: product
+    similarity_threshold: 0.7
+    mode: default_off
+    ttl: 300
+```
+
+### Features
+- Vector-based similarity search
+- Configurable similarity thresholds
+- Time-to-live (TTL) for cache entries
+- Quantization support for efficiency
+- Optional per-request cache control
+
+[Qdrant Configuration Guide](https://docs.litellm.ai/docs/caching/all_caches#initialize-cache---in-memory-redis-s3-bucket-redis-semantic-disk-cache-qdrant-semantic)  
+[Qdrant Documentation](https://qdrant.tech/documentation/quickstart/)
+
 ## Deployment
 
 ### Prerequisites
@@ -81,7 +151,11 @@ cd docker
 docker-compose up -d
 ```
 
-This will start the LiteLLM proxy server along with its required services (Qdrant, PostgreSQL, etc.).
+This will start:
+- LiteLLM proxy server (`:4000`)
+- Qdrant vector database (`:6333`)
+- OpenWebUI (`:3000`)
+- PostgreSQL database (`:5432`)
 
 ## Security Notes
 
@@ -92,7 +166,8 @@ This will start the LiteLLM proxy server along with its required services (Qdran
 
 ## Monitoring and Maintenance
 
+- Access the LiteLLM UI at `http://localhost:4000/ui` for monitoring
 - Background health checks run every 300 seconds
-- Logs are available through Docker logs
-- Monitor cache performance through Qdrant
+- Monitor cache performance through Qdrant UI at `http://localhost:6333/dashboard`
 - Track API usage and performance via Langfuse
+- View logs using `docker-compose logs`
