@@ -1,34 +1,27 @@
 # LiteLLM Demo Project
 
-This project demonstrates the setup of a LiteLLM proxy server with multiple model configurations, semantic caching using Qdrant, and monitoring with Langfuse.
-
-## Features
-
-- Multiple model support (Azure GPT-4, Azure Embedding, Ollama)
-- Semantic caching with Qdrant
-- Request monitoring and logging with Langfuse
-- Authentication with master key
-- Web UI for management
-- Docker containerization
+This project demonstrates a simple setup of a LiteLLM proxy server with Docker support.
 
 ## Project Structure
 
 ```
 .
-├── .env.example          # Example environment variables
-├── config.yaml           # LiteLLM configuration
-├── docker-compose.yml    # Docker compose configuration
-└── docker/              # Docker-specific configurations
-    ├── .env.example
-    ├── config.yaml
-    └── docker-compose.yml
+├── .gitignore           # Git ignore configuration
+├── README.MD           # Project documentation
+└── docker/            # Docker configurations
+    ├── .env.example   # Example environment variables
+    ├── config.yaml    # LiteLLM configuration
+    ├── docker-compose.yml # Docker compose setup
+    └── note.txt      # Additional notes
 ```
 
-## Environment Setup
+## Configuration
 
-1. Copy `.env.example` to `.env` and configure the following variables:
+The project uses Docker for containerization with the following key configurations:
 
-### Required Environment Variables
+### Environment Variables
+
+Copy `docker/.env.example` to `docker/.env` and configure:
 
 ```env
 # Azure OpenAI Configuration
@@ -43,69 +36,63 @@ UI_PASSWORD=your-password
 
 # Database Configuration
 DATABASE_URL=postgresql://user:pass@host:5432/dbname
-```
 
-### Optional Environment Variables
-
-```env
-# Qdrant Configuration
+# Optional: Qdrant and Langfuse Configuration
 QDRANT_API_BASE=http://qdrant:6333
-
-# Langfuse Monitoring
 LANGFUSE_PUBLIC_KEY=your-key
 LANGFUSE_SECRET_KEY=your-secret
 LANGFUSE_HOST=your-host
 ```
 
-## Configuration
+### Features
 
-The `config.yaml` file contains:
+The LiteLLM configuration (`docker/config.yaml`) includes:
 
-- Model configurations (Azure GPT-4, Embedding model, Ollama)
-- Caching settings with Qdrant
-- Logging callbacks (Langfuse)
-- Network and timeout settings
-- Fallback configurations
+- Multiple model support (Azure GPT-4, Azure Embedding, Ollama)
+- Semantic caching with Qdrant
+- Request monitoring with Langfuse
+- Authentication and API key management
+- Health checks and monitoring
 
 ## Deployment
 
-### Using Docker Compose
+### Prerequisites
 
-1. Ensure Docker and Docker Compose are installed
-2. Set up your environment variables in `.env`
-3. Run the stack:
+- Docker
+- Docker Compose
 
+### Steps
+
+1. Clone the repository:
 ```bash
+git clone https://github.com/naiohmi/demo_litellm.git
+cd demo_litellm
+```
+
+2. Set up environment variables:
+```bash
+cp docker/.env.example docker/.env
+# Edit docker/.env with your configuration
+```
+
+3. Deploy with Docker Compose:
+```bash
+cd docker
 docker-compose up -d
 ```
 
-This will start:
-- LiteLLM proxy server
-- Qdrant vector database
-- PostgreSQL database
-- Ollama instance (if configured)
+This will start the LiteLLM proxy server along with its required services (Qdrant, PostgreSQL, etc.).
 
-### Health Checks
+## Security Notes
 
-The system performs background health checks every 300 seconds on configured models.
+- Always keep your `.env` file secure and never commit it to version control
+- The `.gitignore` is configured to exclude sensitive files
+- Use strong passwords for UI and API authentication
+- Regularly update your API keys and master keys
 
-## Security
+## Monitoring and Maintenance
 
-- API authentication using master key
-- User API key redaction in logs
-- Web UI authentication
-- Optional IPv4 enforcement
-
-## Monitoring
-
-- Request success/failure logging
-- Semantic cache hit tracking
-- Custom tags for Langfuse monitoring
-- Request timeout monitoring
-
-## Cache Configuration
-
-The system uses Qdrant for semantic caching with:
-- Similarity threshold: 0.7
-- Default cache TTL: 300 seconds
-- Cache can be enabled/disabled per request
+- Background health checks run every 300 seconds
+- Logs are available through Docker logs
+- Monitor cache performance through Qdrant
+- Track API usage and performance via Langfuse
