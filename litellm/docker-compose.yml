@@ -1,21 +1,23 @@
 services:
-  postgres:
+  postgres_litellm:
     image: postgres:15
-    container_name: postgres
+    container_name: postgres_litellm
+    restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_DB: postgres
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - litellm_postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - litellm-net
 
   litellm:
     image: ghcr.io/berriai/litellm-database:main-latest
     container_name: litellm
+    restart: always
     ports:
       - "4000:4000"
     volumes:
@@ -26,13 +28,14 @@ services:
     command: --config /app/config.yaml
     depends_on:
       - qdrant
-      - postgres
+      - postgres_litellm
     networks:
       - litellm-net
 
   qdrant:
     image: qdrant/qdrant
     container_name: qdrant
+    restart: always
     ports:
       - "6333:6333"
       - "6334:6334"
@@ -42,7 +45,7 @@ services:
       - litellm-net
 
 volumes:
-  postgres_data:
+  litellm_postgres_data:
   qdrant_data:
 
 networks:

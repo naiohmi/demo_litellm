@@ -1,1 +1,0 @@
-podman-compose -f litellm/docker-compose.yml up -d  
