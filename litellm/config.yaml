@@ -38,8 +38,8 @@ litellm_settings:
 
   # Optional logging/callbacks
   success_callback: ["langfuse"]
-  turn_off_message_logging: true
-  redact_user_api_key_info: true
+  turn_off_message_logging: false
+  redact_user_api_key_info: false
   langfuse_default_tags:
     - cache_hit
     - semantic-similarity
