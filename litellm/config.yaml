@@ -50,7 +50,7 @@ litellm_settings:
   force_ipv4: false
 
   # Fallbacks
-  default_fallbacks: ["azure-gpt-4o"]
+  default_fallbacks: ["ollama"]
 
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY

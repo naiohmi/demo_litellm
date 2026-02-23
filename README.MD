@@ -7,12 +7,14 @@ This project demonstrates a simple setup of a LiteLLM proxy server with Docker s
 ```
 .
 ├── .gitignore           # Git ignore configuration
-├── README.MD           # Project documentation
-└── docker/            # Docker configurations
-    ├── .env.example   # Example environment variables
-    ├── config.yaml    # LiteLLM configuration
-    ├── docker-compose.yml # Docker compose setup
-    └── note.txt      # Additional notes
+├── README.MD            # Project documentation
+├── litellm/             # LiteLLM proxy configurations
+│   ├── .env.example     # Example environment variables
+│   ├── config.yaml      # LiteLLM configuration
+│   ├── docker-compose.yml # Docker compose setup
+│   └── note.txt         # Additional notes
+└── langfuse/            # Langfuse observability configurations
+    └── docker-compose.yml # Langfuse docker compose setup
 ```
 
 ## Configuration
@@ -195,13 +197,13 @@ cd demo_litellm
 
 2. Set up environment variables:
 ```bash
-cp docker/.env.example docker/.env
-# Edit docker/.env with your configuration
+cp litellm/.env.example litellm/.env
+# Edit litellm/.env with your configuration
 ```
 
 3. Deploy with Docker Compose:
 ```bash
-cd docker
+cd litellm
 docker-compose up -d
 ```
 
