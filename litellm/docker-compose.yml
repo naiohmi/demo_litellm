@@ -4,9 +4,9 @@ services:
     container_name: postgres_litellm
     restart: always
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
     volumes:
       - litellm_postgres_data:/var/lib/postgresql/data
     ports:
@@ -29,6 +29,7 @@ services:
     depends_on:
       - qdrant
       - postgres_litellm
+      - ollama
     networks:
       - litellm-net
 
@@ -44,9 +45,21 @@ services:
     networks:
       - litellm-net
 
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - litellm-net
+
 volumes:
   litellm_postgres_data:
   qdrant_data:
+  ollama_data:
 
 networks:
   litellm-net:
